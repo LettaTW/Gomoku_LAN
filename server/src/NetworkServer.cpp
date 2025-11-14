@@ -47,21 +47,21 @@ NetworkServer::~NetworkServer() {
 	std::cout << "Server shutdown complete." << std::endl;
 }
 
-// TODO 
+// TODO (網路):
 // 啟動伺服器並開始接受連線
 void NetworkServer::start() {
 
 
 }
 
-// TODO 
+// TODO (網路):
 // 管理接受連線與處理多個客戶端
 void NetworkServer::accept_loop() {
 
 
 }
 
-// TODO 
+// TODO (網路):
 // 處理單一客戶端
 void NetworkServer::handle_client(SOCKET client_socket, int player_id) {
 

@@ -3,7 +3,7 @@
 #include "NetworkServer.h"
 
 GameLogic::GameLogic() : current_turn_player(1) {
-	// TODO
+	// TODO (邏輯)
 	// 初始化棋盤
 }
 
@@ -15,10 +15,10 @@ void GameLogic::process_message(int player_id, const std::string &type, const nl
 	if (type == "place_move") {
 		int x = data["x"];
 		int y = data["y"];
-		// TODO
+		// TODO (邏輯)
 		// 驗證資料是否合法
 
-		// TODO
+		// TODO (邏輯)
 		// 檢查是否有玩家獲勝
 		// 有，廣播 game_over 訊息
 		// 沒有，切換到下一位玩家並廣播 game_update 訊息
@@ -27,14 +27,14 @@ void GameLogic::process_message(int player_id, const std::string &type, const nl
 }
 
 bool GameLogic::check_win(int x, int y, int player) {
-	// TODO
+	// TODO (邏輯)
 	// 檢查玩家是否在 (x, y) 位置下子後獲勝
 
 	return false;
 }
 
 void GameLogic::next_turn() {
-	// TODO
+	// TODO (邏輯)
 	// 切換到下一位玩家的回合
 }
 
