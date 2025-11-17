@@ -15,20 +15,27 @@ std::string Protocol::pack_message(const std::string& json_str) {
 // TODO (資料) :
 // 解析訊息：讀取 4-byte 長度標頭並解析後續的 JSON 字串
 std::pair<std::string, json> Protocol::parse(const std::string& json_str) {
-
+    json j = json::parse(json_str);
+    std::string type = j["type"];
+    return { type, j };
 }
 
 // TODO (資料) :
 // 建立 connect_ok 訊息
 // 包含玩家 ID (pid)
 std::string Protocol::create_connect_ok(int pid) {
-    
+    json j;
+    j["type"] = "connect_ok";
+    j["pid"] = pid;   // 支援 1,2,3
+    return j.dump();
 }
 
 // TODO (資料) :
 // 建立 game_start 訊息
 std::string Protocol::create_game_start(void) {
-
+    json j;
+    j["type"] = "game_start";
+    return j.dump();
 }
 
 // TODO (資料) :
@@ -36,7 +43,25 @@ std::string Protocol::create_game_start(void) {
 // 包含棋盤狀態(board)與下一回合玩家 ID (next_turn)
 // 棋盤為 15x15 的二維陣列，0 表示空格，1 表示玩家 1 的棋子，2 表示玩家 2 的棋子
 std::string Protocol::create_game_update(int board[15][15], int next_turn) {
+    json j;
+    j["type"] = "game_update";
 
+    // 建立 15x15 棋盤（支援 0,1,2,3）
+    json board_json = json::array();
+    for (int i = 0; i < 15; ++i) {
+        json row = json::array();
+        for (int k = 0; k < 15; ++k) {
+            row.push_back(board[i][k]);
+        }
+        board_json.push_back(row);
+    }
+
+    j["board"] = board_json;
+
+    // next_turn 可以是 1,2,3
+    j["next_turn"] = next_turn;
+
+    return j.dump();
 }
 
 // TODO (資料) :
@@ -44,5 +69,8 @@ std::string Protocol::create_game_update(int board[15][15], int next_turn) {
 // 包含獲勝玩家 ID (winner)
 // 如果是平手則 winner 為 0 
 std::string Protocol::create_game_over(int winner) {
-
+    json j;
+    j["type"] = "game_over";
+    j["winner"] = winner;
+    return j.dump();
 }

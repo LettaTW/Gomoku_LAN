@@ -1,7 +1,7 @@
 ﻿#pragma once
 #include <vector>
 #include <mutex>
-#include <nlohmann/json.hpp>
+#include "nlohmann\json.hpp"
 
 class GameLogic {
 public:

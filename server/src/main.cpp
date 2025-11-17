@@ -1,10 +1,10 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include "NetworkServer.h"
 
 int main() {
     try {
-        // TODO (ºô¸ô) ÀË¬d¨Ã§¹¦¨ NetworkServer ªº¹ê§@
-        NetworkServer server(8080);
+        // TODO (ç¶²è·¯) æª¢æŸ¥ä¸¦å®Œæˆ NetworkServer çš„å¯¦ä½œ
+        NetworkServer server(8686);
         server.start();
     }
     catch (const std::exception& e) {

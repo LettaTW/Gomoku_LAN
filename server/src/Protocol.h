@@ -1,28 +1,28 @@
-#pragma once
+ï»¿#pragma once
 #include <string>
 #include <vector>
-#include <nlohmann/json.hpp>
 #include <winsock2.h> // for htonl
+#include "nlohmann\json.hpp"
 
 using json = nlohmann::json;
 
 class Protocol {
 public:
-	// «Ê¸Ë°T®§¡G¦b JSON ¦r¦ê«e¥[¤W 4-byte ªø«×¼ĞÀY
+	// å°è£è¨Šæ¯ï¼šåœ¨ JSON å­—ä¸²å‰åŠ ä¸Š 4-byte é•·åº¦æ¨™é ­
     static std::string pack_message(const std::string& json_str);
 
-	// ¸ÑªR°T®§¡GÅª¨ú 4-byte ªø«×¼ĞÀY¨Ã¸ÑªR«áÄòªº JSON ¦r¦ê
+	// è§£æè¨Šæ¯ï¼šè®€å– 4-byte é•·åº¦æ¨™é ­ä¸¦è§£æå¾ŒçºŒçš„ JSON å­—ä¸²
     static std::pair<std::string, json> parse(const std::string& json_str);
 
-	// «Ø¥ß connect_ok °T®§
+	// å»ºç«‹ connect_ok è¨Šæ¯
     static std::string create_connect_ok(int pid);
 
-	// «Ø¥ß game_start °T®§
+	// å»ºç«‹ game_start è¨Šæ¯
     static std::string create_game_start(void);
 
-	// «Ø¥ß game_update °T®§
+	// å»ºç«‹ game_update è¨Šæ¯
     static std::string create_game_update(int board[15][15], int next_turn);
 
-	// «Ø¥ß game_over °T®§
+	// å»ºç«‹ game_over è¨Šæ¯
     static std::string create_game_over(int winner);
 };

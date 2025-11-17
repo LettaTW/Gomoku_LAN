@@ -1,40 +1,40 @@
-#include "GameLogic.h"
+ï»¿#include "GameLogic.h"
 #include "Protocol.h"
 #include "NetworkServer.h"
 
 GameLogic::GameLogic() : current_turn_player(1) {
-	// TODO (ÅŞ¿è)
-	// ªì©l¤Æ´Ñ½L
+	// TODO (é‚è¼¯)
+	// åˆå§‹åŒ–æ£‹ç›¤
 }
 
-// ³B²z¨Ó¦Ûª±®aªº°T®§
+// è™•ç†ä¾†è‡ªç©å®¶çš„è¨Šæ¯
 void GameLogic::process_message(int player_id, const std::string &type, const nlohmann::json &data) {
 	std::lock_guard<std::mutex> lock(game_mutex);
 
-	// ¿ï¾Ü¹ïÀ³ªº°T®§Ãş«¬¶i¦æ³B²z
+	// é¸æ“‡å°æ‡‰çš„è¨Šæ¯é¡å‹é€²è¡Œè™•ç†
 	if (type == "place_move") {
 		int x = data["x"];
 		int y = data["y"];
-		// TODO (ÅŞ¿è)
-		// ÅçÃÒ¸ê®Æ¬O§_¦Xªk
+		// TODO (é‚è¼¯)
+		// é©—è­‰è³‡æ–™æ˜¯å¦åˆæ³•
 
-		// TODO (ÅŞ¿è)
-		// ÀË¬d¬O§_¦³ª±®aÀò³Ó
-		// ¦³¡A¼s¼½ game_over °T®§
-		// ¨S¦³¡A¤Á´«¨ì¤U¤@¦ìª±®a¨Ã¼s¼½ game_update °T®§
+		// TODO (é‚è¼¯)
+		// æª¢æŸ¥æ˜¯å¦æœ‰ç©å®¶ç²å‹
+		// æœ‰ï¼Œå»£æ’­ game_over è¨Šæ¯
+		// æ²’æœ‰ï¼Œåˆ‡æ›åˆ°ä¸‹ä¸€ä½ç©å®¶ä¸¦å»£æ’­ game_update è¨Šæ¯
 
 	}
 }
 
 bool GameLogic::check_win(int x, int y, int player) {
-	// TODO (ÅŞ¿è)
-	// ÀË¬dª±®a¬O§_¦b (x, y) ¦ì¸m¤U¤l«áÀò³Ó
+	// TODO (é‚è¼¯)
+	// æª¢æŸ¥ç©å®¶æ˜¯å¦åœ¨ (x, y) ä½ç½®ä¸‹å­å¾Œç²å‹
 
 	return false;
 }
 
 void GameLogic::next_turn() {
-	// TODO (ÅŞ¿è)
-	// ¤Á´«¨ì¤U¤@¦ìª±®aªº¦^¦X
+	// TODO (é‚è¼¯)
+	// åˆ‡æ›åˆ°ä¸‹ä¸€ä½ç©å®¶çš„å›åˆ
 }
 

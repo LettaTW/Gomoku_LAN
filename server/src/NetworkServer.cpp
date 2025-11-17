@@ -1,5 +1,5 @@
 ﻿#include "NetworkServer.h"
-#include "GameLogic.h"
+//#include "GameLogic.h"
 #include "Protocol.h"
 
 NetworkServer::NetworkServer(int port) : port(port) {
@@ -9,6 +9,7 @@ NetworkServer::NetworkServer(int port) : port(port) {
 	// MAKEWORD(2,2) 指定使用 Winsock 2.2 版本
 	// WSAData 結構接收有關 Windows Sockets 實作的資訊
 	// 如果 WSAStartup 成功，之後就必須呼叫 WSACleanup 來釋放資源
+	std::cout << "Initializing Winsock" << std::endl;
 	WSADATA wsaData;
 	if (WSAStartup(MAKEWORD(2, 2), &wsaData) != 0) {
 		throw std::runtime_error("WSAStartup failed");
@@ -18,6 +19,7 @@ NetworkServer::NetworkServer(int port) : port(port) {
 	// AF_INET = IPv4
 	// SOCK_STREAM = TCP socket
 	// IPPROTO_TCP = TCP protocol
+	std::cout << "Creating server socket" << std::endl;
 	server_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
 	if (server_socket == INVALID_SOCKET) {
 		WSACleanup();
@@ -30,6 +32,8 @@ NetworkServer::NetworkServer(int port) : port(port) {
 	// AF_INET = IPv4
 	// INADDR_ANY = 接受任何來自網路的連線
 	// htons = 將 port 轉換為網路位元組序
+	std::cout << "Binding server socket to port " << port << std::endl;
+
 	sockaddr_in server_addr;
 	server_addr.sin_family = AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -69,8 +73,7 @@ void NetworkServer::start() {
 		throw std::runtime_error("Listen failed");
 	}
 	std::cout << "Server started on port " << port << std::endl;
-
-
+	accept_loop();
 }
 
 // TODO (網路):
@@ -143,16 +146,34 @@ void NetworkServer::handle_client(SOCKET client_socket, int player_id) {
 	try {
 		std::string connect_ok_msg = Protocol::create_connect_ok(player_id);
 		std::string packed_msg = Protocol::pack_message(connect_ok_msg);
-		send(client_socket, packed_msg.c_str(), packed_msg.size(), 0);
+		if (send(client_socket, packed_msg.c_str(), (int)packed_msg.size(), 0) == SOCKET_ERROR) {
+			throw std::runtime_error("Send 'connect_ok' failed.");
+		}
+
+
 	}
 	catch (const std::exception& e) {
 		std::cerr << "Error sending welcome msg to client " << player_id << ": " << e.what() << std::endl;
 	}
+
+	closesocket(client_socket);
+
+	{
+		std::lock_guard<std::mutex> lock(clients_mutex);
+		for (auto it = client_sockets.begin(); it != client_sockets.end(); ++it) {
+			if (*it == client_socket) {
+				client_sockets.erase(it);
+				std::cout << "Player " << player_id << " is removed from active client list." << std::endl;
+				break;
+			}
+		}
+	}
 }
 
-// TODO 
-// 廣播訊息給所有已連線的客戶端
+
 void NetworkServer::broadcast(const std::string& message) {
 	std::lock_guard<std::mutex> lock(clients_mutex);
-
+	for (SOCKET s : client_sockets) {
+		send(s, message.c_str(), message.length(), 0);
+	}
 }
