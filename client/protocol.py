@@ -1,4 +1,4 @@
-import json
+ï»¿import json
 import struct
 
 class Protocol:
@@ -6,13 +6,13 @@ class Protocol:
         self.network = network
         self.gui = gui
         
-        # ³]©wºô¸ô¦¬¨ì°T®§®É¡A­n©I¥s§Úªº­ş­Ó¨ç¼Æ
+        # è¨­å®šç¶²è·¯æ”¶åˆ°è¨Šæ¯æ™‚ï¼Œè¦å‘¼å«æˆ‘çš„å“ªå€‹å‡½æ•¸
         self.network.on_message_received = self.handle_server_message
 
-    # --- µo°eºİ (GUI -> Server) ---
+    # --- ç™¼é€ç«¯ (GUI -> Server) ---
     
     def send_place_move(self, x, y):
-        """±N¤U´Ñ°Ê§@¥´¥]¦¨ JSON ¨Ãµo°e"""
+        """å°‡ä¸‹æ£‹å‹•ä½œæ‰“åŒ…æˆ JSON ä¸¦ç™¼é€"""
         msg = {
             "type": "place_move",
             "x": x,
@@ -21,33 +21,33 @@ class Protocol:
         self._pack_and_send(msg)
 
     def _pack_and_send(self, msg_dict):
-        """±N dict Âà¬° JSON -> ¥[¤Wªø«×¼ĞÀY -> µo°e"""
+        """å°‡ dict è½‰ç‚º JSON -> åŠ ä¸Šé•·åº¦æ¨™é ­ -> ç™¼é€"""
         json_str = json.dumps(msg_dict)
         data_bytes = json_str.encode('utf-8')
         
-        # ¥[¤W 4-byte ¼ĞÀY (Big Endian)
+        # åŠ ä¸Š 4-byte æ¨™é ­ (Big Endian)
         header = struct.pack('!I', len(data_bytes))
         
-        # ©I¥sºô¸ô¼hµo°e
+        # å‘¼å«ç¶²è·¯å±¤ç™¼é€
         self.network.send_raw(header + data_bytes)
 
-    # --- ±µ¦¬ºİ (Server -> GUI) ---
+    # --- æ¥æ”¶ç«¯ (Server -> GUI) ---
 
     def handle_server_message(self, data_bytes):
-        """¸ÑªR Server ¨Óªº JSON¡A¨Ã§ó·s GUI"""
+        """è§£æ Server ä¾†çš„ JSONï¼Œä¸¦æ›´æ–° GUI"""
         try:
             json_str = data_bytes.decode('utf-8')
             msg = json.loads(json_str)
             msg_type = msg.get("type")
 
-            print(f"[Protocol] Received: {msg_type}") # °£¿ù¥Î
+            print(f"[Protocol] Received: {msg_type}") # é™¤éŒ¯ç”¨
 
             if msg_type == "connect_ok":
                 pid = msg["player_id"]
                 self.gui.set_player_id(pid)
             
             elif msg_type == "game_start":
-                # ¦pªG¦³¤ä´©°ÊºA´Ñ½L¤j¤p¡A¥i¥H¦b³o¸ÌÅª¨ú msg["board_size"]
+                # å¦‚æœæœ‰æ”¯æ´å‹•æ…‹æ£‹ç›¤å¤§å°ï¼Œå¯ä»¥åœ¨é€™è£¡è®€å– msg["board_size"]
                 self.gui.start_game()
             
             elif msg_type == "game_update":
