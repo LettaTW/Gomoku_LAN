@@ -1,27 +1,27 @@
-from network_client import NetworkClient
+ï»¿from network_client import NetworkClient
 from protocol import Protocol
 from game_gui import GameGUI
 
-# ¦øªA¾¹³]©w
+# ä¼ºæœå™¨è¨­å®š
 SERVER_IP = "127.0.0.1"
 SERVER_PORT = 8080
 
 def main():
-    # 1. «Ø¥ß¦U­Ó¼Ò²Õ
+    # 1. å»ºç«‹å„å€‹æ¨¡çµ„
     network = NetworkClient()
     gui = GameGUI()
     protocol = Protocol(network, gui)
 
-    # 2. ¤¬¬Û¸j©w
-    # (GUI »İ­n©I¥s protocol ¨Óµo°e¤U´Ñ°Ê§@)
+    # 2. äº’ç›¸ç¶å®š
+    # (GUI éœ€è¦å‘¼å« protocol ä¾†ç™¼é€ä¸‹æ£‹å‹•ä½œ)
     gui.set_protocol(protocol)
 
-    # 3. ³s½u¨ì¦øªA¾¹
+    # 3. é€£ç·šåˆ°ä¼ºæœå™¨
     if network.connect(SERVER_IP, SERVER_PORT):
-        # 4. ±Ò°Ê¹CÀ¸¥D°j°é (³o·|¥d¦í¡Aª½¨ìµøµ¡Ãö³¬)
+        # 4. å•Ÿå‹•éŠæˆ²ä¸»è¿´åœˆ (é€™æœƒå¡ä½ï¼Œç›´åˆ°è¦–çª—é—œé–‰)
         gui.run()
     else:
-        print("µLªk³s½u¨ì¦øªA¾¹¡Aµ{¦¡µ²§ô¡C")
+        print("ç„¡æ³•é€£ç·šåˆ°ä¼ºæœå™¨ï¼Œç¨‹å¼çµæŸã€‚")
 
 if __name__ == "__main__":
     main()

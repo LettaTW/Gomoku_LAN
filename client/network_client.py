@@ -1,4 +1,4 @@
-import socket
+ï»¿import socket
 import threading
 import struct
 
@@ -6,7 +6,7 @@ class NetworkClient:
     def __init__(self):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.is_connected = False
-        self.on_message_received = None # ³o¬O¤@­Ó¦^©I¨ç¼Æ (Callback)
+        self.on_message_received = None # é€™æ˜¯ä¸€å€‹å›å‘¼å‡½æ•¸ (Callback)
 
     def connect(self, ip, port):
         try:
@@ -15,7 +15,7 @@ class NetworkClient:
             self.is_connected = True
             print("Connected!")
             
-            # ³s½u¦¨¥\«á¡A±Ò°Ê¤@­Ó¤l°õ¦æºü±Mªù­t³d "Å¥"
+            # é€£ç·šæˆåŠŸå¾Œï¼Œå•Ÿå‹•ä¸€å€‹å­åŸ·è¡Œç·’å°ˆé–€è² è²¬ "è½"
             listen_thread = threading.Thread(target=self._listen_loop, daemon=True)
             listen_thread.start()
             return True
@@ -24,7 +24,7 @@ class NetworkClient:
             return False
 
     def send_raw(self, data_bytes):
-        """µo°e­ì©l bytes ¼Æ¾Úµ¹¦øªA¾¹"""
+        """ç™¼é€åŸå§‹ bytes æ•¸æ“šçµ¦ä¼ºæœå™¨"""
         if not self.is_connected:
             return
         try:
@@ -34,24 +34,24 @@ class NetworkClient:
             self.is_connected = False
 
     def _listen_loop(self):
-        """(¤º³¡¨Ï¥Î) «ùÄòºÊÅ¥¦øªA¾¹¶Ç¨Óªº¼Æ¾Ú"""
+        """(å…§éƒ¨ä½¿ç”¨) æŒçºŒç›£è½ä¼ºæœå™¨å‚³ä¾†çš„æ•¸æ“š"""
         try:
             while self.is_connected:
-                # 1. Åª¨ú 4-byte ¼ĞÀY (ªø«×)
+                # 1. è®€å– 4-byte æ¨™é ­ (é•·åº¦)
                 header = self.sock.recv(4)
-                if not header: break # ¦øªA¾¹Â_½u
+                if not header: break # ä¼ºæœå™¨æ–·ç·š
                 
-                # 2. ¸Ñ½Xªø«× (Big Endian '!')
+                # 2. è§£ç¢¼é•·åº¦ (Big Endian '!')
                 msg_len = struct.unpack('!I', header)[0]
 
-                # 3. Åª¨ú³Ñ¤Uªº N bytes (½T«OÅªº¡)
+                # 3. è®€å–å‰©ä¸‹çš„ N bytes (ç¢ºä¿è®€æ»¿)
                 data = b""
                 while len(data) < msg_len:
                     packet = self.sock.recv(msg_len - len(data))
                     if not packet: return
                     data += packet
                 
-                # 4. ¦¬¨ì§¹¾ã«Ê¥]«á¡A³qª¾ Protocol ¼h³B²z
+                # 4. æ”¶åˆ°å®Œæ•´å°åŒ…å¾Œï¼Œé€šçŸ¥ Protocol å±¤è™•ç†
                 if self.on_message_received:
                     self.on_message_received(data)
 

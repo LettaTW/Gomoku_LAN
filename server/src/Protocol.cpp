@@ -1,9 +1,9 @@
-#include "Protocol.h"
+ï»¿#include "Protocol.h"
 
 
 
-// TODO (¸ê®Æ) :
-// «Ê¸Ë°T®§¡G¦b JSON ¦r¦ê«e¥[¤W 4-byte ªø«×¼ĞÀY
+// TODO (è³‡æ–™) :
+// å°è£è¨Šæ¯ï¼šåœ¨ JSON å­—ä¸²å‰åŠ ä¸Š 4-byte é•·åº¦æ¨™é ­
 std::string Protocol::pack_message(const std::string& json_str) {
     uint32_t len = json_str.length();
     uint32_t net_len = htonl(len);
@@ -12,37 +12,37 @@ std::string Protocol::pack_message(const std::string& json_str) {
     return header + json_str;
 }
 
-// TODO (¸ê®Æ) :
-// ¸ÑªR°T®§¡GÅª¨ú 4-byte ªø«×¼ĞÀY¨Ã¸ÑªR«áÄòªº JSON ¦r¦ê
+// TODO (è³‡æ–™) :
+// è§£æè¨Šæ¯ï¼šè®€å– 4-byte é•·åº¦æ¨™é ­ä¸¦è§£æå¾ŒçºŒçš„ JSON å­—ä¸²
 std::pair<std::string, json> Protocol::parse(const std::string& json_str) {
 
 }
 
-// TODO (¸ê®Æ) :
-// «Ø¥ß connect_ok °T®§
-// ¥]§tª±®a ID (pid)
+// TODO (è³‡æ–™) :
+// å»ºç«‹ connect_ok è¨Šæ¯
+// åŒ…å«ç©å®¶ ID (pid)
 std::string Protocol::create_connect_ok(int pid) {
     
 }
 
-// TODO (¸ê®Æ) :
-// «Ø¥ß game_start °T®§
+// TODO (è³‡æ–™) :
+// å»ºç«‹ game_start è¨Šæ¯
 std::string Protocol::create_game_start(void) {
 
 }
 
-// TODO (¸ê®Æ) :
-// «Ø¥ß game_update °T®§
-// ¥]§t´Ñ½Lª¬ºA(board)»P¤U¤@¦^¦Xª±®a ID (next_turn)
-// ´Ñ½L¬° 15x15 ªº¤Gºû°}¦C¡A0 ªí¥ÜªÅ®æ¡A1 ªí¥Üª±®a 1 ªº´Ñ¤l¡A2 ªí¥Üª±®a 2 ªº´Ñ¤l
+// TODO (è³‡æ–™) :
+// å»ºç«‹ game_update è¨Šæ¯
+// åŒ…å«æ£‹ç›¤ç‹€æ…‹(board)èˆ‡ä¸‹ä¸€å›åˆç©å®¶ ID (next_turn)
+// æ£‹ç›¤ç‚º 15x15 çš„äºŒç¶­é™£åˆ—ï¼Œ0 è¡¨ç¤ºç©ºæ ¼ï¼Œ1 è¡¨ç¤ºç©å®¶ 1 çš„æ£‹å­ï¼Œ2 è¡¨ç¤ºç©å®¶ 2 çš„æ£‹å­
 std::string Protocol::create_game_update(int board[15][15], int next_turn) {
 
 }
 
-// TODO (¸ê®Æ) :
-// «Ø¥ß game_over °T®§
-// ¥]§tÀò³Óª±®a ID (winner)
-// ¦pªG¬O¥­¤â«h winner ¬° 0 
+// TODO (è³‡æ–™) :
+// å»ºç«‹ game_over è¨Šæ¯
+// åŒ…å«ç²å‹ç©å®¶ ID (winner)
+// å¦‚æœæ˜¯å¹³æ‰‹å‰‡ winner ç‚º 0 
 std::string Protocol::create_game_over(int winner) {
 
 }
