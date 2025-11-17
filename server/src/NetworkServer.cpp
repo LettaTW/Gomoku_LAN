@@ -70,8 +70,6 @@ void NetworkServer::start() {
 	}
 	std::cout << "Server started on port " << port << std::endl;
 
-	// 開始接受連線
-	accept_loop();
 
 }
 
