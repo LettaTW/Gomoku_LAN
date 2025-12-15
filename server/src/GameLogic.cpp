@@ -3,8 +3,12 @@
 #include "NetworkServer.h"
 
 GameLogic::GameLogic() : current_turn_player(1) {
-	// TODO (邏輯)
 	// 初始化棋盤
+	for (int i = 0; i < 15; ++i) {
+		for (int j = 0; j < 15; ++j) {
+			board[i][j] = 0; // 0 表示空格
+		}
+	}
 }
 
 // 處理來自玩家的訊息
@@ -15,26 +19,64 @@ void GameLogic::process_message(int player_id, const std::string &type, const nl
 	if (type == "place_move") {
 		int x = data["x"];
 		int y = data["y"];
-		// TODO (邏輯)
 		// 驗證資料是否合法
+		if (player_id != current_turn_player) {
+			std::cout << "Not Player " << player_id << "'s turn" << std::endl;
+			return;
+		}
 
-		// TODO (邏輯)
+		if (x < 0 || x >= 15 || y < 0 || y >= 15 || board[x][y] != 0) {
+			return; // 無效移動
+		}
+
+		board[x][y] = player_id; // 放置棋子
+		std::cout << "Player " << player_id << " moved to (" << x << "," << y << ")" << std::endl;
+
 		// 檢查是否有玩家獲勝
 		// 有，廣播 game_over 訊息
 		// 沒有，切換到下一位玩家並廣播 game_update 訊息
-
+		if (check_win(x, y, player_id)) {
+			std::cout << "Player " << player_id << " wins!" << std::endl;
+			std::string game_over_msg = Protocol::create_game_over(player_id);
+			server->broadcast(Protocol::pack_message(game_over_msg));
+		}
+		else {
+			next_turn();
+			std::string game_update_msg = Protocol::create_game_update(board, current_turn_player);
+			server->broadcast(Protocol::pack_message(game_update_msg));
+		}
 	}
 }
 
 bool GameLogic::check_win(int x, int y, int player) {
 	// TODO (邏輯)
 	// 檢查玩家是否在 (x, y) 位置下子後獲勝
+	// 水平
+	int count = 0;
+	for (int i = 0; i < 15; i++) {
+		if (board[i][y] == player) count++;
+		else count = 0;
+		if (count == 5) return true;
+	}
+	// 垂直
+	count = 0;
+	for (int j = 0; j < 15; j++) {
+		if (board[x][j] == player) count++;
+		else count = 0;
+		if (count == 5) return true;
+	}
 
+	// 斜線 (\)
+	
+
+	// 斜線 (/)
+	
 	return false;
 }
 
 void GameLogic::next_turn() {
 	// TODO (邏輯)
 	// 切換到下一位玩家的回合
+	current_turn_player = (current_turn_player % 3) + 1; // 假設有 3 位玩家
 }
 
