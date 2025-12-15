@@ -1,6 +1,8 @@
 ﻿#include "NetworkServer.h"
-//#include "GameLogic.h"
+#include "GameLogic.h"
 #include "Protocol.h"
+
+GameLogic game;
 
 NetworkServer::NetworkServer(int port) : port(port) {
 
@@ -44,6 +46,9 @@ NetworkServer::NetworkServer(int port) : port(port) {
 		WSACleanup();
 		throw std::runtime_error("Bind failed");
 	}
+	
+	// 設定伺服器的遊戲邏輯指針
+	game.set_server(this);
 }
 
 NetworkServer::~NetworkServer() {
@@ -63,7 +68,7 @@ NetworkServer::~NetworkServer() {
 	std::cout << "Server shutdown complete." << std::endl;
 }
 
-// TODO (網路):
+
 // 啟動伺服器並開始接受連線
 void NetworkServer::start() {
 	// 開始監聽連線
@@ -76,7 +81,7 @@ void NetworkServer::start() {
 	accept_loop();
 }
 
-// TODO (網路):
+
 // 管理接受連線與處理多個客戶端
 void NetworkServer::accept_loop() {
 	int player_id_count = 1;
@@ -135,6 +140,11 @@ void NetworkServer::accept_loop() {
 			std::string start_msg = Protocol::create_game_start();
 			std::string packed_msg = Protocol::pack_message(start_msg);
 			broadcast(packed_msg);
+			
+			std::cout << "Broadcasting initial game_update message." << std::endl;
+			std::string update_msg = Protocol::create_game_update(game.board, 1);  // 玩家 1 先手
+			std::string packed_update = Protocol::pack_message(update_msg);
+			broadcast(packed_update);
 		}
 		player_id_count++;
 	}
@@ -150,10 +160,52 @@ void NetworkServer::handle_client(SOCKET client_socket, int player_id) {
 			throw std::runtime_error("Send 'connect_ok' failed.");
 		}
 
+		// 接收客戶端的訊息
+		char buffer[4096];
+		int bytes_received = 0;
+		std::string remaining_data = "";
 
+		while ((bytes_received = recv(client_socket, buffer, sizeof(buffer), 0)) > 0) {
+			remaining_data.append(buffer, bytes_received);
+
+			// 處理緩衝區內的資料
+			while (remaining_data.size() >= 4) {
+
+				// 1. 先「偷看」前 4 個 bytes 來取得訊息長度
+				//    (這裡還不能 erase，因為如果資料不夠，我們還需要保留這 4 bytes)
+				//    使用 const uint32_t* 解決編譯錯誤
+				uint32_t msg_len = ntohl(*reinterpret_cast<const uint32_t*>(remaining_data.data()));
+
+				// 2. 【關鍵】檢查資料是否完整
+				//    我們需要： 4 byte 標頭 + msg_len byte 內容
+				if (remaining_data.size() < 4 + msg_len) {
+					// 資料還不夠 (例如只收到了一半的 JSON)
+					// 跳出內部迴圈，繼續去外層 recv 更多資料
+					break;
+				}
+
+				// 3. 資料完整了！取出 JSON 本體
+				//    substr(開始位置, 長度) -> 跳過前 4 bytes，取 msg_len 長度
+				std::string json_str = remaining_data.substr(4, msg_len);
+
+				// 4. 解析 JSON 並交給遊戲邏輯
+				try {
+					// Protocol::parse 只需要純 JSON 字串
+					auto [type, data] = Protocol::parse(json_str);
+					game.process_message(player_id, type, data);
+				}
+				catch (const std::exception& e) {
+					std::cerr << "JSON Parsing Error from Player " << player_id << ": " << e.what() << std::endl;
+					// 即使解析失敗，也要移除這段有問題的資料，避免無窮迴圈
+				}
+
+				// 5. 從緩衝區移除這則已處理完畢的訊息 (標頭 4 + 內容 msg_len)
+				remaining_data.erase(0, 4 + msg_len);
+			}
+		}
 	}
 	catch (const std::exception& e) {
-		std::cerr << "Error sending welcome msg to client " << player_id << ": " << e.what() << std::endl;
+		std::cerr << "Error handling client " << player_id << ": " << e.what() << std::endl;
 	}
 
 	closesocket(client_socket);

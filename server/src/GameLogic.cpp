@@ -37,6 +37,9 @@ void GameLogic::process_message(int player_id, const std::string &type, const nl
 		// 沒有，切換到下一位玩家並廣播 game_update 訊息
 		if (check_win(x, y, player_id)) {
 			std::cout << "Player " << player_id << " wins!" << std::endl;
+			std::string game_update_msg = Protocol::create_game_update(board, current_turn_player);
+			server->broadcast(Protocol::pack_message(game_update_msg));
+
 			std::string game_over_msg = Protocol::create_game_over(player_id);
 			server->broadcast(Protocol::pack_message(game_over_msg));
 		}
@@ -49,7 +52,6 @@ void GameLogic::process_message(int player_id, const std::string &type, const nl
 }
 
 bool GameLogic::check_win(int x, int y, int player) {
-	// TODO (邏輯)
 	// 檢查玩家是否在 (x, y) 位置下子後獲勝
 	// 水平
 	int count = 0;
@@ -67,16 +69,39 @@ bool GameLogic::check_win(int x, int y, int player) {
 	}
 
 	// 斜線 (\)
-	
+	count = 0;
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			if (board[i][j] == player) {
+				int k = 1;
+				while (i + k < 15 && j + k < 15 && board[i + k][j + k] == player) {
+					k++;
+				}
+				if (k >= 5) return true;
+			}
+		}
+	}
 
 	// 斜線 (/)
+	count = 0;
+	for (int i = 0; i < 15; i++) {
+		for (int j = 0; j < 15; j++) {
+			if (board[i][j] == player) {
+				int k = 1;
+				while (i + k < 15 && j - k >= 0 && board[i + k][j - k] == player) {
+					k++;
+				}
+				if (k >= 5) return true;
+			}
+		}
+	}
 	
 	return false;
 }
 
 void GameLogic::next_turn() {
-	// TODO (邏輯)
-	// 切換到下一位玩家的回合
-	current_turn_player = (current_turn_player % 3) + 1; // 假設有 3 位玩家
+	// 切換到下一位玩家的回合 (支援 3 位或更多玩家)
+	// 這裡假設最多 3 位玩家，可根據需要調整
+	current_turn_player = (current_turn_player % 3) + 1;
 }
 

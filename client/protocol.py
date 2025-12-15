@@ -43,17 +43,18 @@ class Protocol:
             print(f"[Protocol] Received: {msg_type}") # 除錯用
 
             if msg_type == "connect_ok":
-                pid = msg["player_id"]
+                pid = msg["pid"]
                 self.gui.set_player_id(pid)
             
             elif msg_type == "game_start":
-                # 如果有支援動態棋盤大小，可以在這裡讀取 msg["board_size"]
                 self.gui.start_game()
             
             elif msg_type == "game_update":
+                # ✅ 確保棋盤是列表形式（伺服器已發送為 JSON 陣列）
                 board = msg["board"]
                 next_turn = msg["next_turn"]
                 self.gui.update_board(board, next_turn)
+                print(f"[Protocol] Board updated. Next turn: Player {next_turn}")
             
             elif msg_type == "game_over":
                 winner = msg["winner"]
@@ -61,3 +62,5 @@ class Protocol:
 
         except Exception as e:
             print(f"Protocol error: {e}")
+            import traceback
+            traceback.print_exc()

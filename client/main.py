@@ -4,7 +4,7 @@ from game_gui import GameGUI
 
 # 伺服器設定
 SERVER_IP = "127.0.0.1"
-SERVER_PORT = 8080
+SERVER_PORT = 8686
 
 def main():
     # 建立各個模組
