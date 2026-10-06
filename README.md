@@ -1,18 +1,12 @@
 # Gomoku_LAN
 
-# ╕h╓H╓╜╓l╢я (Gomoku LAN Project)
+# Е╓ Д╨╨Д╨■Е╜░Фё▀ (Gomoku LAN Project)
 
-Ёo╛O╓@╜с╟Р╘С C++/Python ╙╨╟о╟Л╨Т╦Т╕h╓H╓╜╓l╢я╧Cю╦║C
+И─≥Ф≤╞Д╦─Е─▀Е÷╨Ф√╪ C++/Python Г └Е█─Е÷÷Г╤╡Х╥╞Е╓ Д╨╨Д╨■Е╜░Фё▀И│┼Ф┬╡Ц─┌
 
-## ╖чЁN╢л
-* **╕Ь╙A╬╧ (Server):** C++
-* **╚х╓А╨щ (Client):** Python
+## Ф┼─Х║⌠Фё╖
+* **Д╪╨Ф°█Е≥╗ (Server):** C++
+* **Е╝╒Ф┬╤Г╚╞ (Client):** Python
 * **GUI:** Pygame
-* **Ёq╟T:** TCP Sockets
-* **╪ф╬з╝Ф╕║:** JSON (╠a╕Ё 4-byte ╙Ь╚в╚e╨С)
-
-## ╧н╤╓╓ю╓u
-* **╕╗╜Ш1 (еч©Х):** `server/src/GameLogic.*`
-* **╕╗╜Ш2 (╦Й╝ф):** `server/src/Protocol.*`, `client/protocol.py`, `server/lib/json.hpp`
-* **╕╗╜Ш3 (GUI):** `client/game_gui.py`
-* **╠z (╨Т╦Т):** `server/src/NetworkServer.*`, `client/network_client.py`
+* **И─ Х╗┼:** TCP Sockets
+* **Ф∙╦Ф⌠ Ф═╪Е╪▐:** JSON (Е╦╤Ф°┴ 4-byte И∙╥Е╨╕Е┴█Г╤╢)
